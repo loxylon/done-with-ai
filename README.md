@@ -60,3 +60,10 @@ launch_widgets()  # В активном Jupyter frontend.
 Learning curves используют фиксированный panel целей, а финальная таблица — все цели.
 Проверка запуска не доказывает сходимость; дальний крафт на малом бюджете может не освоиться.
 В notebook отдельно описаны ограничения occupancy, logit ranking, goal coverage и evaluation.
+
+## Интерактивный сайт
+
+В папке [`crl-lab`](crl-lab/) находится браузерная лаборатория по формулам статьи:
+семантические цели, RB, terminal edge cases, critic logits и PPO + teacher.
+Все вычисления локальные, параметры ситуации можно сохранить в ссылке.
+Инструкции запуска, проверки и GitHub Pages находятся в [README сайта](crl-lab/README.md).

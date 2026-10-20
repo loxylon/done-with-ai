@@ -1,0 +1,45 @@
+name: Publish CRL Lab
+on:
+  push:
+    branches: [main]
+    paths: ['crl-lab/**', '.github/workflows/crl-lab-pages.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: crl-lab-pages
+  cancel-in-progress: false
+jobs:
+  test-and-publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: crl-lab
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: crl-lab/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+      - run: npm run publish:pages
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: crl-lab/dist
+  deploy:
+    needs: test-and-publish
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy tested site
+        id: deployment
+        uses: actions/deploy-pages@v4

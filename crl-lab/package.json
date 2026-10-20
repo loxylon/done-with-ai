@@ -1,0 +1,20 @@
+{
+  "name": "crl-future-lab",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "npm run build && node scripts/serve.mjs",
+    "preview": "node scripts/serve.mjs",
+    "test": "node --test tests/math.test.js",
+    "test:browser": "playwright test",
+    "publish:pages": "node scripts/publish.mjs"
+  },
+  "dependencies": {
+    "katex": "0.16.22",
+    "@fontsource-variable/manrope": "5.2.8"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1"
+  }
+}

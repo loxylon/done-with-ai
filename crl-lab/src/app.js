@@ -89,7 +89,7 @@ function controls() {
       + group('ПОПРОБУЙТЕ', `<p class="field-help">Включите похожую цель при двух активных предикатах. Вероятности старых меток изменятся, хотя само состояние осталось прежним.</p>`);
   } else if (route === 'future' || route === 'termination') {
     body = group('ДИСКОНТИРОВАНИЕ', slider('Горизонт будущего γ','gamma',.5,.995,.005,'Большое γ придаёт больший вес далёким состояниям.')
-      + (route==='termination'?slider('Перенос конца γterm','term',0,.995,.005,'Чем больше значение, тем дальше назад уходит terminal penalty.')+`<button class="link-button" data-action="match-gamma">Приравнять γterm к γ ↗</button>`:''));
+      + (route==='termination'?slider('Перенос конца γterm','term',0,.995,.005,'Чем больше значение, тем дальше назад уходит terminal penalty.')+`<button class="link-button" data-action="match-gamma">Приравнять γterm к γ</button>`:''));
     body += group('ТРАЕКТОРИЯ', (route==='termination'?optionBlock('Тип конца','end', [['death','Смерть · настоящий terminal'],['success','Успех · terminal с меткой'],['timeout','Лимит времени · truncation'],['window','Просто конец rollout']]):'')
       + slider('Живых следующих состояний','live',1,6,1)
       + slider('Максимальный offset Kmax','cap',1,8,1,'Короткое окно не делает будущее за ним поглощающим.'));
@@ -102,7 +102,7 @@ function controls() {
       return `<div class="field"><div class="field-head"><label for="logit-${g}">${goal.name}</label><output data-logit-out="${g}">${fmt(value,2)}</output></div><input id="logit-${g}" type="range" data-logit="${g}" min="${Math.min(-6,Math.floor(value))}" max="${Math.max(6,Math.ceil(value))}" step=".05" value="${value}"></div>`;
     }).join('')+`<p class="field-help">Logit ∅ фиксирован: 0. Он не участвует в gradient update.</p>`);
     body += group('ОДИН ШАГ ОБУЧЕНИЯ', optionBlock('Target для выбранного action','criticTarget', [['fatal','Смерть: y∅ = 1'],['live','Цель достигнута: yg = 1'],['trajectory','Target из раздела 03']])+slider('Learning rate η','criticLR',.05,2,.05));
-    body += group('ОТКУДА БЕРЁТСЯ f', `<details><summary class="field-help">Разложить на φ · ψ</summary><p class="field-help">Два признака — одна гипотеза score. Это не эмбеддинги обученной сети.</p>${['phi','psi'].map(key=>`<label class="field-help">${key==='phi'?'φ(s,a)':'ψ(g)'}</label><div class="number-pair">${state[key].map((v,i)=>`<input aria-label="${key} ${i+1}" type="number" min="-4" max="4" step=".25" value="${v}" data-vector="${key}" data-index="${i}">`).join('')}</div>`).join('')}<button class="link-button" data-action="apply-dot">Подставить φ · ψ в выбранный logit ↗</button></details>`);
+    body += group('ОТКУДА БЕРЁТСЯ f', `<details><summary class="field-help">Разложить на φ · ψ</summary><p class="field-help">Два признака — одна гипотеза score. Это не эмбеддинги обученной сети.</p>${['phi','psi'].map(key=>`<label class="field-help">${key==='phi'?'φ(s,a)':'ψ(g)'}</label><div class="number-pair">${state[key].map((v,i)=>`<input aria-label="${key} ${i+1}" type="number" min="-4" max="4" step=".25" value="${v}" data-vector="${key}" data-index="${i}">`).join('')}</div>`).join('')}<button class="link-button" data-action="apply-dot">Подставить φ · ψ в выбранный logit</button></details>`);
   } else {
     body = group('PPO UPDATE', slider('Текущий logit θ для a₀','theta',Math.min(-6,Math.floor(state.theta)),Math.max(6,Math.ceil(state.theta)),.05)
       + slider('Старая вероятность πold(a₀)','old',.05,.95,.01)

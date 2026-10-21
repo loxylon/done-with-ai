@@ -6,7 +6,7 @@
     "build": "node scripts/build.mjs",
     "dev": "npm run build && node scripts/serve.mjs",
     "preview": "node scripts/serve.mjs",
-    "test": "node --test tests/math.test.js",
+    "test": "node --test tests/*.test.js",
     "test:browser": "playwright test",
     "publish:pages": "node scripts/publish.mjs"
   },

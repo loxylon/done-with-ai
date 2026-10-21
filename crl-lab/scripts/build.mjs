@@ -4,7 +4,7 @@ const root = resolve(import.meta.dirname, '..');
 const out = resolve(root, 'dist');
 await rm(out, { recursive: true, force: true });
 await mkdir(`${out}/vendor/fonts`, { recursive: true });
-for (const file of ['index.html', 'styles.css', 'src']) {
+for (const file of ['index.html', 'walkthrough.html', 'styles.css', 'walkthrough.css', 'src']) {
   await cp(`${root}/${file}`, `${out}/${file}`, { recursive: true });
 }
 for (const file of ['katex.mjs', 'katex.min.css', 'fonts']) {

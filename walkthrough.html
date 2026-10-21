@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f5f0">
+  <meta name="description" content="Пройдите Dual-CRL-PPO по шагам: агент на карте, пять целей, все метки, вероятности, градиенты и обновления нескольких итераций.">
+  <title>Пошаговая среда — CRL Lab</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23de6848'/%3E%3Ctext x='32' y='45' font-family='Georgia' font-size='49' fill='white' text-anchor='middle'%3Eφ%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./vendor/katex.min.css">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./walkthrough.css">
+</head>
+<body class="walkthrough-page">
+  <a class="skip" href="#calculations">Перейти к вычислениям</a>
+  <aside class="sidebar">
+    <a class="brand" href="./"><span class="brand-symbol">φ</span><span>CRL<span class="brand-light"> / lab</span></span></a>
+    <div class="sidebar-caption">Лаборатория будущего</div>
+    <div class="nav-label">РАЗОБРАТЬ АЛГОРИТМ</div>
+    <nav aria-label="Разделы лаборатории">
+      <a href="./#semantics"><span class="nav-number">01</span><span>Семантические цели<small>Одно состояние → много меток</small></span></a>
+      <a href="./#future"><span class="nav-number">02</span><span>Усреднение будущего<small>Зачем нужен Rao–Blackwell</small></span></a>
+      <a href="./#termination"><span class="nav-number">03</span><span>Когда будущее оборвалось<small>Поглощение и termination bias</small></span></a>
+      <a href="./#critic"><span class="nav-number">04</span><span>Что учит критик<small>Logits, вероятности, градиент</small></span></a>
+      <a href="./#teacher"><span class="nav-number">05</span><span>Критик → PPO<small>Клиппинг и сила учителя</small></span></a>
+      <a href="./walkthrough.html" aria-current="page"><span class="nav-number">06</span><span>Пошаговая среда<small>Клетка → формула → обновление</small></span></a>
+    </nav>
+    <div class="sidebar-bottom"><span class="little-line"></span><p>Видно каждое действие.<br>Проверяемо каждое число.</p><a class="text-button" href="./#termination">Вернуться к лаборатории</a></div>
+  </aside>
+  <div class="app">
+    <header class="topbar"><span class="topbar-title">CRL LAB / ПОШАГОВЫЙ ОПЫТ</span><span class="live-badge"><i></i> Настоящие обновления SGD</span><div class="topbar-actions"><button class="trace-button compact" id="share-experiment">Ссылка на опыт</button><button class="trace-button compact" id="export-experiment">Все числа · JSON</button></div></header>
+    <main>
+      <div class="hero trace-hero"><div><div class="eyebrow">06 / АЛГОРИТМ ПОД МИКРОСКОПОМ</div><h1>Каждый шаг.<br><span>Все числа.</span></h1><p class="hero-description">Сначала агент проходит маленький мир. Затем его будущее превращается в метки, метки — в градиенты, а градиенты — в новые действия. Проследите эту цепочку несколько раз.</p></div><div class="trace-intro"><span class="trace-kicker">КАК СМОТРЕТЬ</span><p><b>1.</b> Выберите шаг на ленте.<br><b>2.</b> Пройдите шесть вкладок расчёта.<br><b>3.</b> Посмотрите обновление и перейдите к следующей итерации.</p></div></div>
+      <section id="scenario" aria-label="Цели и параметры опыта"></section>
+      <p class="trace-status" id="experiment-status" role="status" aria-live="polite"></p>
+      <div class="trace-layout">
+        <section id="world-panel" class="trace-world" aria-label="Мир и пошаговое управление"></section>
+        <section id="calculations" class="trace-calculations" tabindex="-1" aria-label="Все вычисления выбранного шага"></section>
+      </div>
+      <section id="iteration-history" aria-label="Сравнение итераций"></section>
+      <details class="trace-about"><summary>Что здесь совпадает со статьёй, а что упрощено?</summary><p>Выполняются semantic labels, Rao–Blackwell targets, fixed-zero absorbing class, termination discount и Dual-CRL-PPO с GAE, value loss, entropy и annealed teacher CE. Критик — факторизация φ(s,a)·ψ(g) размерности 2. Политика и value — таблицы; вместо нейросетей, Adam и RAdam используется аналитический SGD. Это действующее обучение маленькой модели, а не воспроизведение бенчмарков статьи.</p><p>Здесь команда фиксирована на весь rollout. Награда 1 выдаётся на каждом посещении командуемого предиката, цели сами не завершают эпизод. Это упрощение относительно first-hit scheduler в notebook. Каждая итерация начинается со стартовой клетки. Опасность завершает эпизод; лимит шагов — truncation с value bootstrap. PPO не нормирует advantages. Все batch-градиенты — средние по шагам, повторные посещения суммируются.</p><p>Это журнал уже собранного rollout: на вкладке «Будущее» виден его остаток, но агент при выборе действия его не использует. Параметры сбора заморожены. Числа округлены только для показа; наведите на число или выгрузите JSON для полной точности JavaScript float64. Несколько маленьких обновлений не гарантируют решения задачи.</p></details>
+      <footer><span>CRL LAB · среда 4 × 3 · пять предикатов</span><a href="https://github.com/loxylon/done-with-ai/tree/main/crl-lab" target="_blank" rel="noopener noreferrer">Исходники и численные проверки</a></footer>
+    </main>
+  </div>
+  <noscript><p>Для пошагового опыта включите JavaScript.</p></noscript>
+  <script type="module" src="./src/walkthrough.js"></script>
+</body>
+</html>

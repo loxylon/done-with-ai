@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f6f5f0">
+  <meta name="description" content="MEGA и OMEGA, ICML 2020: интерактивный разбор выбора целей, энтропии и исследования. Пять целей и настоящее маленькое обучение с HER.">
+  <title>MEGA Lab — исследовать край</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%2352877f'/%3E%3Ctext x='32' y='45' font-family='Georgia' font-size='43' fill='white' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./vendor/katex.min.css">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./mega.css">
+</head>
+<body class="mega-page">
+  <a class="skip" href="#mega-content">Перейти к опыту</a>
+  <aside class="sidebar">
+    <a class="brand" href="./mega.html"><span class="brand-symbol">M</span><span>MEGA<span class="brand-light"> / lab</span></span></a>
+    <div class="sidebar-caption">Где искать следующую цель</div>
+    <div class="nav-label">РАЗОБРАТЬ СТАТЬЮ</div>
+    <nav aria-label="Разделы MEGA Lab">
+      <a href="#problem" data-pane="problem"><span class="nav-number">01</span><span>Зачем нужен MEGA<small>Далёкая цель и пустой replay</small></span></a>
+      <a href="#selector" data-pane="selector"><span class="nav-number">02</span><span>Как выбирается цель<small>Буфер → кандидаты → минимум</small></span></a>
+      <a href="#environment" data-pane="environment"><span class="nav-number">03</span><span>Посмотреть в движении<small>Среда, HER и пять методов</small></span></a>
+      <a href="#entropy" data-pane="entropy"><span class="nav-number">04</span><span>Почему это работает<small>Энтропия и краевые случаи</small></span></a>
+      <a href="#omega" data-pane="omega"><span class="nav-number">05</span><span>Когда вернуться к задаче<small>OMEGA: от исследования к цели</small></span></a>
+    </nav>
+    <div class="sidebar-bottom"><span class="little-line"></span><p>Pitis et al.<br>ICML 2020 · §2–3 · Algorithm 2</p><a class="text-button" href="./">Лаборатория Contrastive RL</a></div>
+  </aside>
+  <div class="app">
+    <header class="topbar"><span class="topbar-title">MAXIMUM ENTROPY GAIN EXPLORATION</span><span class="live-badge"><i></i> Все числа вычисляются здесь</span><div class="topbar-actions"><button class="mbtn small" id="mega-share">Ссылка на сценарий</button><a class="mbtn small" href="https://proceedings.mlr.press/v119/pitis20a/pitis20a.pdf" target="_blank" rel="noopener noreferrer">Статья · PDF</a></div></header>
+    <main>
+      <div class="hero mhero"><div><div class="eyebrow" id="mega-eyebrow"></div><h1 id="mega-title"></h1><p class="hero-description" id="mega-description"></p></div><div class="mhero-symbol" aria-hidden="true">H<span>GO TO THE EDGE.<br>THEN EXPLORE.</span></div></div>
+      <p id="mega-status" class="mstatus" role="status" aria-live="polite"></p>
+      <section id="mega-content" tabindex="-1" aria-label="Интерактивный разбор MEGA"></section>
+      <details class="msource"><summary>Источник, упрощения и границы выводов</summary><p><a href="https://proceedings.mlr.press/v119/pitis20a.html" target="_blank" rel="noopener noreferrer">Silviu Pitis, Harris Chan, Stephen Zhao, Bradly Stadie, Jimmy Ba. Maximum Entropy Gain Exploration for Long Horizon Multi-goal Reinforcement Learning. ICML 2020, PMLR 119.</a> Источники: основной текст §2–3, Algorithm 2, Propositions 1–3; <a href="https://proceedings.mlr.press/v119/pitis20a/pitis20a-supp.pdf" target="_blank" rel="noopener noreferrer">supplement B–C</a>. <a href="https://github.com/spitis/mrl" target="_blank" rel="noopener noreferrer">Код авторов</a>.</p><p>На сайте дискретные пять целей и точная гистограмма вместо непрерывного goal space и KDE. В среде реально обучается табличный Q-learning с future HER 4:1, а не DDPG. Go Exploration увеличивает ε на каждом достижении поведенческой цели. Табличный goal-terminal TD target использует 0 bootstrap при достижении цели. Все пять методов имеют одну базу обучения, бюджет и параметры; меняется SELECT. Для прозрачности фильтр среды использует известную проходимость; динамический Q cutoff статьи разобран отдельно в инспекторе. rfaab, нейросети и оптимизаторы статьи не воспроизводятся.</p><p>Сравнение на коридоре — один воспроизводимый учебный seed, а не эксперимент статьи и не гарантия превосходства. Плотность редкой цели не равна её достижимости. MEGA — эвристика прибавки энтропии, а не обещание её роста в каждом эпизоде. pα в objective OMEGA и фактическое распределение поведенческих целей — разные объекты. На экране числа округлены; в расчётах используются JavaScript float64.</p></details>
+      <footer><span>MEGA LAB · пять целей, один вопрос: куда идти дальше?</span><a href="https://github.com/loxylon/done-with-ai/tree/main/crl-lab/src/mega" target="_blank" rel="noopener noreferrer">Код вычислений</a></footer>
+    </main>
+  </div>
+  <noscript><p>Для интерактивного разбора включите JavaScript.</p></noscript>
+  <script type="module" src="./src/mega/app.js"></script>
+</body>
+</html>
